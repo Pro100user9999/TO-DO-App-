@@ -7,28 +7,24 @@ function App() {
     {
       id: 1,
       description: "Купить молоко",
-      createdAt: new Date(),
       completed: true,
       editing: false,
     },
     {
       id: 2,
       description: "Изучить React",
-      createdAt: new Date(),
       completed: false,
       editing: true,
     },
     {
       id: 3,
       description: "Сделать домашнее задание",
-      createdAt: new Date(),
       completed: false,
       editing: false,
     },
     {
       id: 4,
       description: "Погулять с собакой",
-      createdAt: new Date(),
       completed: false,
       editing: false,
     },
