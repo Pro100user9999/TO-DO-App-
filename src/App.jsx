@@ -22,12 +22,6 @@ function App() {
       completed: false,
       editing: false,
     },
-    {
-      id: 4,
-      description: "Погулять с собакой",
-      completed: false,
-      editing: false,
-    },
   ];
   const activeTasks = tasks.filter((task) => !task.completed).length;
 
