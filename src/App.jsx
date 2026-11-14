@@ -1,20 +1,21 @@
 import NewTaskForm from "./components/NewTaskForm";
 import TaskList from "./components/TaskList.jsx";
 import Footer from "./components/Footer.jsx";
+import { useState } from "react";
 
 function App() {
-  const tasks = [
+  const [tasks, setTasks] = useState([
     {
       id: 1,
       description: "Купить молоко",
-      completed: true,
+      completed: false,
       editing: false,
     },
     {
       id: 2,
       description: "Изучить React",
       completed: false,
-      editing: true,
+      editing: false,
     },
     {
       id: 3,
@@ -22,8 +23,45 @@ function App() {
       completed: false,
       editing: false,
     },
-  ];
+  ]);
   const activeTasks = tasks.filter((task) => !task.completed).length;
+
+  function toggleTask(id) {
+    setTasks((prevTasks) =>
+      prevTasks.map((task) => {
+        if (task.id === id) {
+          return { ...task, completed: !task.completed };
+        }
+        return task;
+      }),
+    );
+  }
+
+  function deleteTask(id) {
+    setTasks((prevTasks) => prevTasks.filter((task) => task.id !== id));
+  }
+
+  function editTask(id) {
+    setTasks((prevTasks) =>
+      prevTasks.map((task) => {
+        if (task.id === id) {
+          return { ...task, editing: true };
+        }
+        return task;
+      }),
+    );
+  }
+
+  function saveTask(id, description) {
+    setTasks((prevTasks) =>
+      prevTasks.map((task) => {
+        if (task.id === id) {
+          return { ...task, description, editing: false };
+        }
+        return task;
+      }),
+    );
+  }
 
   return (
     <section className="todoapp">
@@ -32,7 +70,13 @@ function App() {
         <NewTaskForm />
       </header>
       <section className="main">
-        <TaskList tasks={tasks} />
+        <TaskList
+          tasks={tasks}
+          onToggle={toggleTask}
+          onDelete={deleteTask}
+          onEdit={editTask}
+          onSave={saveTask}
+        />
       </section>
       <Footer count={activeTasks} />
     </section>
