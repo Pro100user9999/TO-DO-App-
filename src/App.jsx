@@ -29,7 +29,6 @@ function App() {
       .catch(console.error)
       .finally(() => setIsLoading(false));
   }, []);
-  const activeTasks = tasks.filter((task) => !task.completed).length;
 
   function toggleTask(id) {
     setTasks((prevTasks) =>
@@ -113,7 +112,7 @@ function App() {
         />
       </section>
       <Footer
-        count={activeTasks}
+        count={visibleTasks.length}
         onFilterChange={setFilter}
         filter={filter}
         onClearCompleted={clearCompleted}

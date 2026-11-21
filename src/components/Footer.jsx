@@ -3,7 +3,7 @@ import TasksFilter from "./TasksFilter";
 function Footer(props) {
   return (
     <footer className="footer">
-      <span className="todo-count">{props.count} items left</span>
+      <span className="todo-count">Total tasks: {props.count}</span>
       <TasksFilter
         onFilterChange={props.onFilterChange}
         filter={props.filter}
