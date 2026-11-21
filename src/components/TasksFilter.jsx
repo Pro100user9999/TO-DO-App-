@@ -1,14 +1,29 @@
-function TasksFilter() {
+function TasksFilter(props) {
   return (
     <ul className="filters">
       <li>
-        <button className="selected">All</button>
+        <button
+          className={props.filter === "All" ? "selected" : ""}
+          onClick={() => props.onFilterChange("All")}
+        >
+          All
+        </button>
       </li>
       <li>
-        <button>Active</button>
+        <button
+          className={props.filter === "Active" ? "selected" : ""}
+          onClick={() => props.onFilterChange("Active")}
+        >
+          Active
+        </button>
       </li>
       <li>
-        <button>Completed</button>
+        <button
+          className={props.filter === "Completed" ? "selected" : ""}
+          onClick={() => props.onFilterChange("Completed")}
+        >
+          Completed
+        </button>
       </li>
     </ul>
   );

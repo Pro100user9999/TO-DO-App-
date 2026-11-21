@@ -1,29 +1,34 @@
 import NewTaskForm from "./components/NewTaskForm";
 import TaskList from "./components/TaskList.jsx";
 import Footer from "./components/Footer.jsx";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 function App() {
-  const [tasks, setTasks] = useState([
-    {
-      id: 1,
-      description: "Купить молоко",
-      completed: false,
-      editing: false,
-    },
-    {
-      id: 2,
-      description: "Изучить React",
-      completed: false,
-      editing: false,
-    },
-    {
-      id: 3,
-      description: "Сделать домашнее задание",
-      completed: false,
-      editing: false,
-    },
-  ]);
+  const [filter, setFilter] = useState("All");
+  const [tasks, setTasks] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  useEffect(() => {
+    fetch(`https://jsonplaceholder.typicode.com/todos`)
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`Ошибка загрузки задачи: ${response.status}`);
+        }
+        return response.json();
+      })
+      .then((data) => {
+        const loadedTasks = data.map((task) => {
+          return {
+            id: task.id,
+            description: task.title,
+            completed: task.completed,
+            editing: false,
+          };
+        });
+        setTasks(loadedTasks);
+      })
+      .catch(console.error)
+      .finally(() => setIsLoading(false));
+  }, []);
   const activeTasks = tasks.filter((task) => !task.completed).length;
 
   function toggleTask(id) {
@@ -41,6 +46,17 @@ function App() {
     setTasks((prevTasks) => prevTasks.filter((task) => task.id !== id));
   }
 
+  function addTask(description) {
+    const newTask = {
+      id: crypto.randomUUID(),
+      description,
+      completed: false,
+      editing: false,
+    };
+
+    setTasks((prevTasks) => [...prevTasks, newTask]);
+  }
+
   function editTask(id) {
     setTasks((prevTasks) =>
       prevTasks.map((task) => {
@@ -53,32 +69,55 @@ function App() {
   }
 
   function saveTask(id, description) {
+    const trimmedDescription = description.trim();
+    if (!trimmedDescription) {
+      return;
+    }
     setTasks((prevTasks) =>
       prevTasks.map((task) => {
         if (task.id === id) {
-          return { ...task, description, editing: false };
+          return { ...task, description: trimmedDescription, editing: false };
         }
         return task;
       }),
     );
   }
 
+  const visibleTasks = tasks.filter((task) => {
+    if (filter === "Active") {
+      return !task.completed;
+    }
+    if (filter === "Completed") {
+      return task.completed;
+    }
+    return true;
+  });
+
+  function clearCompleted() {
+    setTasks((prevTasks) => prevTasks.filter((task) => !task.completed));
+  }
+
   return (
     <section className="todoapp">
       <header className="header">
         <h1>todos</h1>
-        <NewTaskForm />
+        <NewTaskForm onAdd={addTask} isLoading={isLoading} />
       </header>
       <section className="main">
         <TaskList
-          tasks={tasks}
+          tasks={visibleTasks}
           onToggle={toggleTask}
           onDelete={deleteTask}
           onEdit={editTask}
           onSave={saveTask}
         />
       </section>
-      <Footer count={activeTasks} />
+      <Footer
+        count={activeTasks}
+        onFilterChange={setFilter}
+        filter={filter}
+        onClearCompleted={clearCompleted}
+      />
     </section>
   );
 }

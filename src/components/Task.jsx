@@ -1,4 +1,14 @@
+import { useRef, useEffect } from "react";
+
 function Task(props) {
+  const inputRef = useRef(null);
+
+  useEffect(() => {
+    if (props.editing && inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, [props.editing]);
+
   function handleKeyDown(event) {
     if (event.key === "Enter") {
       props.onSave(event.currentTarget.value);
@@ -29,8 +39,8 @@ function Task(props) {
           type="text"
           className="edit"
           defaultValue={props.description}
+          ref={inputRef}
           onKeyDown={handleKeyDown}
-          autoFocus
         />
       )}
     </li>
