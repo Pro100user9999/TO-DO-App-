@@ -55,7 +55,9 @@ function Task({
         <label htmlFor={checkboxId}>
           <span className="description">{description}</span>
         </label>
-        <span className="created">создано {timeAgo}</span>
+        <span className="block pl-[60px]  text-sm text-gray-500">
+          создано {timeAgo}
+        </span>
 
         <button
           className="icon icon-edit"
