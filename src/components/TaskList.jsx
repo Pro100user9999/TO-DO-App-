@@ -9,6 +9,7 @@ function TaskList(props) {
           description={task.description}
           completed={task.completed}
           editing={task.editing}
+          createdAt={task.createdAt}
           onToggle={() => props.onToggle(task.id)}
           onDelete={() => props.onDelete(task.id)}
           onEdit={() => props.onEdit(task.id)}

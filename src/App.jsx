@@ -22,6 +22,7 @@ function App() {
             description: task.title,
             completed: task.completed,
             editing: false,
+            createdAt: new Date(),
           };
         });
         setTasks(loadedTasks);
@@ -51,6 +52,7 @@ function App() {
       description,
       completed: false,
       editing: false,
+      createdAt: new Date(),
     };
 
     setTasks((prevTasks) => [...prevTasks, newTask]);

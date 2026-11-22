@@ -1,44 +1,81 @@
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useState, useId } from "react";
+import { formatDistanceToNow } from "date-fns";
+import { ru } from "date-fns/locale";
 
-function Task(props) {
+function Task({
+  description,
+  createdAt,
+  completed = false,
+  editing = false,
+  onToggle,
+  onEdit,
+  onDelete,
+  onSave,
+}) {
+  const [, setTick] = useState(0);
   const inputRef = useRef(null);
+  const checkboxId = useId();
 
   useEffect(() => {
-    if (props.editing && inputRef.current) {
+    const intervalId = setInterval(() => {
+      setTick((prevTick) => prevTick + 1);
+    }, 1000);
+
+    return () => clearInterval(intervalId);
+  }, []);
+
+  useEffect(() => {
+    if (editing && inputRef.current) {
       inputRef.current.focus();
     }
-  }, [props.editing]);
+  }, [editing]);
 
   function handleKeyDown(event) {
     if (event.key === "Enter") {
-      props.onSave(event.currentTarget.value);
+      onSave(event.currentTarget.value);
     }
   }
+  const timeAgo = formatDistanceToNow(createdAt, {
+    addSuffix: true,
+    includeSeconds: true,
+    locale: ru,
+  });
   return (
-    <li
-      className={props.editing ? "editing" : props.completed ? "completed" : ""}
-    >
+    <li className={editing ? "editing" : completed ? "completed" : ""}>
       <div className="view">
         <input
+          id={checkboxId}
+          name="completed"
           className="toggle"
           type="checkbox"
-          checked={props.completed}
-          onChange={props.onToggle}
+          checked={completed}
+          onChange={onToggle}
         />
 
-        <label>
-          <span className="description">{props.description}</span>
+        <label htmlFor={checkboxId}>
+          <span className="description">{description}</span>
         </label>
+        <span className="created">создано {timeAgo}</span>
 
-        <button className="icon icon-edit" onClick={props.onEdit}></button>
-        <button className="icon icon-destroy" onClick={props.onDelete}></button>
+        <button
+          className="icon icon-edit"
+          onClick={onEdit}
+          aria-label="Редактировать задачу"
+        ></button>
+        <button
+          className="icon icon-destroy"
+          onClick={onDelete}
+          aria-label="Удалить задачу"
+        ></button>
       </div>
 
-      {props.editing && (
+      {editing && (
         <input
+          name="description"
+          aria-label="Текст задачи"
           type="text"
           className="edit"
-          defaultValue={props.description}
+          defaultValue={description}
           ref={inputRef}
           onKeyDown={handleKeyDown}
         />
