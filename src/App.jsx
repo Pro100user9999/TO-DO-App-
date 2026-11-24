@@ -55,7 +55,7 @@ function App() {
       createdAt: new Date(),
     };
 
-    setTasks((prevTasks) => [...prevTasks, newTask]);
+    setTasks((prevTasks) => [newTask, ...prevTasks]);
   }
 
   function editTask(id) {
